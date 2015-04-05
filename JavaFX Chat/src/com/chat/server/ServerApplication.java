@@ -1,5 +1,7 @@
 package com.chat.server;
 
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,10 +19,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ServerApplication extends Application {
-	
+	public static ArrayList<Thread> threads;
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
+		threads = new ArrayList<Thread>();
 		primaryStage.setTitle("JavaFX Chat Server");
 		primaryStage.setScene(makePortUI(primaryStage));
 		primaryStage.show();
@@ -29,7 +32,9 @@ public class ServerApplication extends Application {
 	@Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
-		
+		for(Thread thread: threads){
+			thread.interrupt();
+		}
 	}
 
 	public Scene makePortUI(Stage primaryStage) {
@@ -60,7 +65,7 @@ public class ServerApplication extends Application {
 				Thread serverThread = (new Thread(server));
 				serverThread.setName("Server Thread");
 				serverThread.start();
-				
+				threads.add(serverThread);
 				/* Change the view of the primary stage */
 				primaryStage.close();
 				primaryStage.setScene(makeServerUI(server));

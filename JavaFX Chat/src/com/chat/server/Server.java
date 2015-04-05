@@ -19,6 +19,8 @@ public class Server implements Runnable {
 	public Server(int portNumber) {
 		this.portNumber = portNumber;
 		serverLog = FXCollections.observableArrayList();
+		clients = new ArrayList<Socket>();
+		clientThreads = new ArrayList<ClientThread>();
 		try {
 			socket = new ServerSocket(portNumber);
 		} catch (IOException e) {
@@ -77,6 +79,7 @@ public class Server implements Runnable {
 				Thread clientThread = new Thread(clientThreadHolderClass);
 				clientThreads.add(clientThreadHolderClass);
 				clientThread.start();
+				ServerApplication.threads.add(clientThread);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

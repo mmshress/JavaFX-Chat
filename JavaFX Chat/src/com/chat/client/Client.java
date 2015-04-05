@@ -9,12 +9,12 @@ import java.net.Socket;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 
-public class Client {
+public class Client implements Runnable{
 	/* The Socket of the Client */
 	private Socket clientSocket;
 	private BufferedReader serverToClientReader;
 	private PrintWriter clientToServerWriter;
-	private ObservableList<String> chatLog;
+	public ObservableList<String> chatLog;
 	
 	public Client(String hostName, int portNumber, String name) {
 		try {
