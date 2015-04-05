@@ -18,6 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+
 public class ServerApplication extends Application {
 	public static ArrayList<Thread> threads;
 	@Override
@@ -27,16 +28,10 @@ public class ServerApplication extends Application {
 		primaryStage.setTitle("JavaFX Chat Server");
 		primaryStage.setScene(makePortUI(primaryStage));
 		primaryStage.show();
+		
 	}
 
-	@Override
-	public void stop() throws Exception {
-		// TODO Auto-generated method stub
-		for(Thread thread: threads){
-			thread.interrupt();
-		}
-	}
-
+	
 	public Scene makePortUI(Stage primaryStage) {
 		/* Make the root and set properties */
 		GridPane rootPane = new GridPane();
@@ -64,10 +59,11 @@ public class ServerApplication extends Application {
 						.getText()));
 				Thread serverThread = (new Thread(server));
 				serverThread.setName("Server Thread");
+				serverThread.setDaemon(true);
 				serverThread.start();
 				threads.add(serverThread);
 				/* Change the view of the primary stage */
-				primaryStage.close();
+				primaryStage.hide();
 				primaryStage.setScene(makeServerUI(server));
 				primaryStage.show();
 			}

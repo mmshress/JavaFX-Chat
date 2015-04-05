@@ -50,34 +50,37 @@ public class Server implements Runnable {
 			/* Infinite loop to accept any incoming connection requests */
 			while (true) {
 				/* Add to log that the server's listening */
-				
+
 				Platform.runLater(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
 						serverLog.add("Listening for client");
-						
+
 					}
 				});
-				
+
 				final Socket clientSocket = socket.accept();
-					
+
 				/* Add the incoming socket connection to the list of clients */
 				clients.add(clientSocket);
 				/* Add to log that a client connected */
 				Platform.runLater(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						serverLog.add("Client " + clientSocket.getRemoteSocketAddress() + " connected");
+						serverLog.add("Client "
+								+ clientSocket.getRemoteSocketAddress()
+								+ " connected");
 					}
 				});
 				ClientThread clientThreadHolderClass = new ClientThread(
 						clientSocket, this);
 				Thread clientThread = new Thread(clientThreadHolderClass);
 				clientThreads.add(clientThreadHolderClass);
+				clientThread.setDaemon(true);
 				clientThread.start();
 				ServerApplication.threads.add(clientThread);
 			}
@@ -88,11 +91,26 @@ public class Server implements Runnable {
 
 	}
 
+	public void clientDisconnected(ClientThread client) {
+
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				serverLog.add("Client "
+						+ client.getClientSocket().getRemoteSocketAddress()
+						+ " disconnected");
+			}
+		});
+		clients.remove(clientThreads.indexOf(client));
+		clientThreads.remove(clientThreads.indexOf(client));
+	}
+
 	public void writeToAllSockets(String input) {
 		for (ClientThread clientThread : clientThreads) {
 			clientThread.writeToServer(input);
 		}
 	}
 
-	
 }

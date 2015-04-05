@@ -1,5 +1,7 @@
 package com.chat.client;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -13,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class ClientApplication extends Application {
@@ -60,17 +63,31 @@ public class ClientApplication extends Application {
 			public void handle(ActionEvent Event) {
 				// TODO Auto-generated method stub
 				/* Instantiate the client class and start it's thread */
-				Client client = new Client(hostNameField.getText(), Integer
-						.parseInt(portNumberField.getText()), nameField
-						.getText());
-				Thread clientThread = new Thread(client);
-				clientThread.start();
-				threads.add(clientThread);
+				Client client;
+				try {
+					client = new Client(hostNameField.getText(), Integer
+							.parseInt(portNumberField.getText()), nameField
+							.getText());
+					Thread clientThread = new Thread(client);
+					clientThread.setDaemon(true);
+					clientThread.start();
+					threads.add(clientThread);
+					
+					/* Change the scene of the primaryStage */
+					primaryStage.close();
+					primaryStage.setScene(makeChatUI(client));
+					primaryStage.show();
+				}
+				catch(ConnectException e){
+					hostNameLabel.setTextFill(Color.RED);
+					hostNameLabel.setText("Invalid host name, try again");
+				}
+				catch (NumberFormatException | IOException e) {
+					// TODO Auto-generated catch block
+					portNumberLabel.setTextFill(Color.RED);
+					portNumberLabel.setText("Invalid port number, try again");
+				}
 				
-				/* Change the scene of the primaryStage */
-				primaryStage.close();
-				primaryStage.setScene(makeChatUI(client));
-				primaryStage.show();
 			}
 		});
 

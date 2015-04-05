@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
+
+import javafx.application.Platform;
 
 /* Thread Class for each incoming client */
-public class ClientThread implements Runnable{
-	
+public class ClientThread implements Runnable {
+
 	/* The socket of the client */
 	private Socket clientSocket;
 	/* Server class from which thread was called */
@@ -16,9 +19,8 @@ public class ClientThread implements Runnable{
 	private BufferedReader incomingMessageReader;
 	private PrintWriter outgoingMessageWriter;
 	/* The name of the client */
-	
-	
 	private String clientName;
+
 	public ClientThread(Socket clientSocket, Server baseServer) {
 		this.setClientSocket(clientSocket);
 		this.baseServer = baseServer;
@@ -31,29 +33,46 @@ public class ClientThread implements Runnable{
 					clientSocket.getInputStream()));
 			/* Writer to write outgoing messages from the server to the client */
 			outgoingMessageWriter = new PrintWriter(
-					clientSocket.getOutputStream());
+					clientSocket.getOutputStream(), true);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	public void run() {
 		try {
 			this.clientName = getClientNameFromNetwork();
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					baseServer.serverLog.add("Client "
+							+ clientSocket.getRemoteSocketAddress() + " is "
+							+ clientName);
+				}
+
+			});
 			String inputToServer;
-			while(true){
+			while (true) {
 				inputToServer = incomingMessageReader.readLine();
 				baseServer.writeToAllSockets(inputToServer);
 			}
+		} catch (SocketException e) {
+			baseServer.clientDisconnected(this);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	public void writeToServer(String input){
+
+	public void writeToServer(String input) {
 		outgoingMessageWriter.println(input);
 	}
+
 	public String getClientNameFromNetwork() throws IOException {
 		/*
 		 * Get the name of the client, which is the first data transaction the
@@ -61,12 +80,15 @@ public class ClientThread implements Runnable{
 		 */
 		return incomingMessageReader.readLine();
 	}
-	public String getClientName(){
+
+	public String getClientName() {
 		return this.clientName;
 	}
+
 	public Socket getClientSocket() {
 		return clientSocket;
 	}
+
 	public void setClientSocket(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
