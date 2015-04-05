@@ -59,7 +59,7 @@ public class ClientApplication extends Application {
 		Label nameLabel = new Label("Name ");
 		Label hostNameLabel = new Label("Host Name");
 		Label portNumberLabel = new Label("Port Number");
-
+		Label errorLabel = new Label();
 		/* Make the button and its handler */
 		Button submitClientInfoButton = new Button("Done");
 		submitClientInfoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -83,13 +83,13 @@ public class ClientApplication extends Application {
 					primaryStage.show();
 				}
 				catch(ConnectException e){
-					hostNameLabel.setTextFill(Color.RED);
-					hostNameLabel.setText("Invalid host name, try again");
+					errorLabel.setTextFill(Color.RED);
+					errorLabel.setText("Invalid host name, try again");
 				}
 				catch (NumberFormatException | IOException e) {
 					// TODO Auto-generated catch block
-					portNumberLabel.setTextFill(Color.RED);
-					portNumberLabel.setText("Invalid port number, try again");
+					errorLabel.setTextFill(Color.RED);
+					errorLabel.setText("Invalid port number, try again");
 				}
 				
 			}
@@ -106,7 +106,7 @@ public class ClientApplication extends Application {
 		rootPane.add(portNumberField, 0, 2);
 		rootPane.add(portNumberLabel, 1, 2);
 		rootPane.add(submitClientInfoButton, 0, 3, 2, 1);
-
+		rootPane.add(errorLabel, 0, 4);
 		/* Make the Scene and return it */
 		return new Scene(rootPane, 400, 400);
 	}
