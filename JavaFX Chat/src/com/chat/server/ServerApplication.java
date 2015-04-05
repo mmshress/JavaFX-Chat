@@ -23,6 +23,10 @@ import javafx.stage.Stage;
 
 public class ServerApplication extends Application {
 	public static ArrayList<Thread> threads;
+	public static void main(String[] args){
+		launch();
+	}
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
