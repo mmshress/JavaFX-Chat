@@ -1,5 +1,6 @@
 package com.chat.server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -14,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -42,6 +44,8 @@ public class ServerApplication extends Application {
 
 		/* Text label and field for port Number */
 		Text portText = new Text("Port Number");
+		Label errorLabel = new Label();
+		errorLabel.setTextFill(Color.RED);
 		TextField portTextField = new TextField();
 		portText.setFont(Font.font("Tahoma"));
 		/*
@@ -55,17 +59,26 @@ public class ServerApplication extends Application {
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
 				/* Make the server and it's thread, and run it */
-				Server server = new Server(Integer.parseInt(portTextField
-						.getText()));
-				Thread serverThread = (new Thread(server));
-				serverThread.setName("Server Thread");
-				serverThread.setDaemon(true);
-				serverThread.start();
-				threads.add(serverThread);
-				/* Change the view of the primary stage */
-				primaryStage.hide();
-				primaryStage.setScene(makeServerUI(server));
-				primaryStage.show();
+				try {
+					Server server = new Server(Integer.parseInt(portTextField
+							.getText()));
+					Thread serverThread = (new Thread(server));
+					serverThread.setName("Server Thread");
+					serverThread.setDaemon(true);
+					serverThread.start();
+					threads.add(serverThread);
+					/* Change the view of the primary stage */
+					primaryStage.hide();
+					primaryStage.setScene(makeServerUI(server));
+					primaryStage.show();
+				}catch(IllegalArgumentException e){
+					errorLabel.setText("Invalid port number");
+				}
+				catch (IOException e) {
+					// TODO Auto-generated catch block
+					
+				}
+				
 			}
 		});
 		
@@ -73,7 +86,7 @@ public class ServerApplication extends Application {
 		rootPane.add(portText, 0, 0);
 		rootPane.add(portTextField, 0, 1);
 		rootPane.add(portApprovalButton, 0, 2);
-		
+		rootPane.add(errorLabel, 0, 3);
 		/*
 		 * Make the Scene and return it Scene has constructor (Parent, Width,
 		 * Height)

@@ -16,18 +16,14 @@ public class Server implements Runnable {
 	private ArrayList<ClientThread> clientThreads;
 	public ObservableList<String> serverLog;
 	public ObservableList<String> clientNames;
-	public Server(int portNumber) {
+	public Server(int portNumber) throws IOException {
 		this.portNumber = portNumber;
 		serverLog = FXCollections.observableArrayList();
 		clientNames = FXCollections.observableArrayList();
 		clients = new ArrayList<Socket>();
 		clientThreads = new ArrayList<ClientThread>();
-		try {
-			socket = new ServerSocket(portNumber);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		socket = new ServerSocket(portNumber);
+		
 	}
 
 	public void startServer() {

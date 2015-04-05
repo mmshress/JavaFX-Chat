@@ -20,6 +20,10 @@ import javafx.stage.Stage;
 
 public class ClientApplication extends Application {
 	private ArrayList<Thread> threads;
+	public static void main(String[] args){
+		launch();
+	}
+	
 	@Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
