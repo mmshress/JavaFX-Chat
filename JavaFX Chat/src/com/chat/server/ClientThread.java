@@ -49,9 +49,8 @@ public class ClientThread implements Runnable {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					baseServer.serverLog.add("Client "
-							+ clientSocket.getRemoteSocketAddress() + " is "
-							+ clientName);
+					baseServer.clientNames.add(clientName + " - "
+							+ clientSocket.getRemoteSocketAddress());
 				}
 
 			});

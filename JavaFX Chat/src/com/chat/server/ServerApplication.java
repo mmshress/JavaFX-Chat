@@ -94,13 +94,21 @@ public class ServerApplication extends Application {
 		ObservableList<String> logList = server.serverLog;
 		logView.setItems(logList);
 		
+		/* Make the client list ListView */
+		Label clientLabel = new Label("Clients Connected");
+		ListView<String> clientView = new ListView<String>();
+		ObservableList<String> clientList = server.clientNames;
+		clientView.setItems(clientList);
+		
 		/* Add the view to the pane */
 		rootPane.add(logLabel, 0, 0);
 		rootPane.add(logView, 0, 1);
+		rootPane.add(clientLabel, 0, 2);
+		rootPane.add(clientView, 0, 3);
 		
 		/* Make scene and return it,
 		 * Scene has constructor (Parent, Width, Height)
 		 *  */
-		return new Scene(rootPane, 400, 400);
+		return new Scene(rootPane, 400, 600);
 	}
 }

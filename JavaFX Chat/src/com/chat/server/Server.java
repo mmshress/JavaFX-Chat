@@ -15,10 +15,11 @@ public class Server implements Runnable {
 	private ArrayList<Socket> clients;
 	private ArrayList<ClientThread> clientThreads;
 	public ObservableList<String> serverLog;
-
+	public ObservableList<String> clientNames;
 	public Server(int portNumber) {
 		this.portNumber = portNumber;
 		serverLog = FXCollections.observableArrayList();
+		clientNames = FXCollections.observableArrayList();
 		clients = new ArrayList<Socket>();
 		clientThreads = new ArrayList<ClientThread>();
 		try {
@@ -101,10 +102,13 @@ public class Server implements Runnable {
 				serverLog.add("Client "
 						+ client.getClientSocket().getRemoteSocketAddress()
 						+ " disconnected");
+				clients.remove(clientThreads.indexOf(client));
+				clientNames.remove(clientThreads.indexOf(client));
+				clientThreads.remove(clientThreads.indexOf(client));
 			}
 		});
-		clients.remove(clientThreads.indexOf(client));
-		clientThreads.remove(clientThreads.indexOf(client));
+		
+		
 	}
 
 	public void writeToAllSockets(String input) {
